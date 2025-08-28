@@ -77,7 +77,7 @@ curl -s -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubuse
 
 需要备份的就是db和template
 ```
-docker run --name sublinkx -p 8000:8000 \
+docker run --name sublinkx -p 15268:15268 \
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \
