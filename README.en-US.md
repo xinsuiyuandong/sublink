@@ -75,7 +75,7 @@ Then cd into the directory and enter the following command to mount the data.
 
 All you need to back up is the db and templates.
 ```
-docker run --name sublinkx -p 8000:8000 \
+docker run --name sublinkx -p 15268:15268 \
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \
