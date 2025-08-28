@@ -41,19 +41,23 @@ function Select {
     else
         echo "当前运行状态: 未运行"
     fi
-    echo "1. 启动服务"
-    echo "2. 停止服务"
-    echo "3. 卸载安装"
-    echo "4. 查看服务状态"
-    echo "5. 查看运行目录"
-    echo "6. 修改端口"
-    echo "7. 更新"
-    echo "8. 重置账号密码"
-    echo "0. 退出"
-    echo -n "请选择一个选项: "
-    read option
-
-    case $option in
+    echo -e "——————————————————————"
+    echo -e "${green}----sublink订阅转换服务----${plain}"
+    echo -e "${green}〔3X-UI中文优化版〕专属定制${plain}"
+    echo -e "——————————————————————"
+    echo -e "${green}0.${plain} 退出脚本"
+    echo -e "${green}1.${plain} 启动服务"
+    echo -e "${green}2.${plain} 停止服务"
+    echo -e "${green}3.${plain} 卸载安装"
+    echo -e "${green}4.${plain} 查看服务状态"
+    echo -e "${green}5.${plain} 查看运行目录"
+    echo -e "${green}6.${plain} 修改端口"
+    echo -e "${green}7.${plain} 更新版本"
+    echo -e "${green}8.${plain} 重置账号/密码"
+    echo -e "——————————————————————"
+    echo && read -p "请输入选项 [0-8]: " num
+  
+    case "${num}" in
         1)
             systemctl start sublink
             systemctl daemon-reload
