@@ -62,7 +62,7 @@ surge支持协议:ss trojan vmess hy2 tuic
 ## [安装说明]
 ### linux方式：
 ```
-curl -s -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubusercontent.com/gooaclok819/sublinkX/main/install.sh | sudo bash
+curl -s -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubusercontent.com/xeefei/sublink/main/install.sh | sudo bash
 ```
 
 ```sublink``` 呼出菜单
@@ -93,5 +93,5 @@ Thank you for your attention and support!
 Feel free to adjust any details as needed!
 
 ## Stargazers over time
-[![Stargazers over time](https://starchart.cc/gooaclok819/sublinkX.svg?variant=adaptive)](https://starchart.cc/gooaclok819/sublinkX)
+[![Stargazers over time](https://starchart.cc/xeefei/sublink.svg?variant=adaptive)](https://starchart.cc/xeefei/sublink)
 
