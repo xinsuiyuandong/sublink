@@ -54,10 +54,13 @@ systemctl daemon-reload
 # 启动并启用服务
 systemctl start sublink
 systemctl enable sublink
-echo "服务已启动并已设置为开机启动"
-echo "默认账号admin密码123456 默认端口8000"
-echo "安装完成已经启动输入sublink可以呼出菜单"
-
+echo ""
+echo -e "${green}服务已启动并已设置为：开机启动${plain}"
+echo ""
+echo -e "${green}输入命令〔sublink〕可以呼出菜单${plain}"
+echo ""
+echo -e "${green}默认账号admin 密码123456 默认端口15268${plain}"
+echo ""
 
 # 下载menu.sh并设置权限
 curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubusercontent.com/gooaclok819/sublinkX/main/menu.sh
