@@ -36,7 +36,7 @@ jobs:
 
           path: ./sublink_${{ matrix.platform }}
 
-                - name: Upload files to GH release
+      - name: Upload files to GH release
         uses: svenstaro/upload-release-action@v2
         if: github.event_name == 'release' && github.event.action == 'published'
         with:
@@ -45,3 +45,4 @@ jobs:
           file: sublink_${{ matrix.platform }}
           asset_name: sublink_${{ matrix.platform }}
           prerelease: true
+
