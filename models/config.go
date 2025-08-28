@@ -36,7 +36,7 @@ func ConfigInit() {
 		defaultConfig := Config{
 			JwtSecret:  R, // 生成随机JWT密钥
 			ExpireDays: 14,
-			Port:       8000, // 默认端口
+			Port:       15268, // 默认端口
 		}
 
 		// 生成yaml文件
