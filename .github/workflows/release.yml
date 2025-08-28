@@ -1,0 +1,36 @@
+name: Release sublink
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        platform:
+          - amd64
+          - arm64
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+
+      - name: Upload files to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sublink_${{ matrix.platform }}
+          path: ./sublink_${{ matrix.platform }}
