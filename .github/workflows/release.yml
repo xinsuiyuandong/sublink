@@ -33,4 +33,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sublink_${{ matrix.platform }}
+
           path: ./sublink_${{ matrix.platform }}
+
+                - name: Upload files to GH release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release' && github.event.action == 'published'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: sublink_${{ matrix.platform }}
+          asset_name: sublink_${{ matrix.platform }}
+          prerelease: true
