@@ -1,6 +1,6 @@
 <template>
   <a
-    href="https://github.com/gooaclok819/sublinkX"
+    href="https://github.com/xeefei/sublink"
     target="_blank"
     class="github-corner"
     aria-label="View source on Github"
