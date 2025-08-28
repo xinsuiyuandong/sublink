@@ -29,11 +29,6 @@ jobs:
           go-version-file: go.mod
           check-latest: true
 
-      - name: Upload files to Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: sublink_${{ matrix.platform }}
-
 
       - name: Upload files to GH release
         uses: svenstaro/upload-release-action@v2
@@ -44,5 +39,6 @@ jobs:
           file: sublink_${{ matrix.platform }}
           asset_name: sublink_${{ matrix.platform }}
           prerelease: true
+
 
 
