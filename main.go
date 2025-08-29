@@ -97,7 +97,7 @@ func main() {
 	var username, password string
 	settingCmd.StringVar(&username, "username", "", "设置账号")
 	settingCmd.StringVar(&password, "password", "", "设置密码")
-	settingCmd.IntVar(&port, "port", 15268, "修改端口")
+	settingCmd.IntVar(&port, "port", 8000, "修改端口")
 	switch args[1] {
 	// 解析setting命令标志
 	case "setting":
