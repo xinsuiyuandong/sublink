@@ -7,9 +7,9 @@ function Up {
     machine_type=$(uname -m)
 
     if [ "$machine_type" = "x86_64" ]; then
-        file_name="sublink_amd64"
+        file_name="sublink_linux_amd64"
     elif [ "$machine_type" = "aarch64" ]; then
-        file_name="sublink_arm64"
+        file_name="sublink_linux_arm64"
     else
         echo "不支持的机器类型: $machine_type"
         exit 1
