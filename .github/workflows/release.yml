@@ -1,44 +1,82 @@
-name: Release sublink
+# Workflow 的名称
+name: Build and Release sublink
 
+# Workflow 的触发条件
 on:
-  workflow_dispatch:
+  # 当有新的 Release 被 "published" (发布) 时触发
   release:
     types: [published]
-  push:
-    branches:
-      - main
+  # 允许在 GitHub Actions 页面手动触发此 Workflow
+  workflow_dispatch:
 
 jobs:
-  build:
+  # 定义一个名为 build-and-release 的任务
+  build-and-release:
+    # 为任务设置权限，'contents: write' 是为了让 Action 可以上传文件到 Release
     permissions:
       contents: write
+    # 指定任务运行的虚拟环境
+    runs-on: ubuntu-latest
+    # 定义构建矩阵，用于交叉编译不同平台和架构的版本
     strategy:
       matrix:
-        platform:
-          - amd64
-          - arm64
+        # 使用 include 来定义每个构建组合
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+            extension: .exe # Windows 系统需要 .exe 后缀
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
 
-    runs-on: ubuntu-latest
     steps:
+      # 第 1 步：检出代码
+      # 使用官方的 checkout action 来获取仓库的源代码
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
+      # 第 2 步：设置 Go 环境
+      # 使用官方的 setup-go action 来配置 Go 编译环境
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          # 从 go.mod 文件中自动识别并设置 Go 的版本
+          go-version-file: 'go.mod'
           check-latest: true
 
+      # 第 3 步：编译应用程序
+      # 这是你之前缺失的关键步骤
+      - name: Build Application
+        env:
+          # 设置环境变量，用于 Go 的交叉编译
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          # 执行 go build 命令来编译
+          # -v: 显示编译的包名
+          # -o: 指定输出的文件名，格式为 "sublink_系统_架构.后缀"
+          # -trimpath: 移除二进制文件中的所有文件系统路径，使构建可复现
+          # -ldflags="-s -w": 优化编译，-s 去除符号表，-w 去除调试信息，减小文件体积
+          go build -v -o sublink_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }} -trimpath -ldflags="-s -w" .
 
-      - name: Upload files to GH release
+      # 第 4 步：上传编译产物到 Release
+      # 仅当事件是 release 时才执行此步骤
+      - name: Upload Release Asset
+        if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'release' && github.event.action == 'published'
         with:
+          # GitHub Token，用于 API 认证
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          file: sublink_${{ matrix.platform }}
-          asset_name: sublink_${{ matrix.platform }}
-          prerelease: true
-
-
-
+          # 要上传的文件路径，必须和上一步编译输出的文件名一致
+          file: sublink_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }}
+          # 在 Release 页面显示的资源名称
+          asset_name: sublink_${{ matrix.goos }}_${{ matrix.goarch }}${{ matrix.extension }}
+          # 指定要上传到哪个 tag，github.ref_name 会自动获取当前发布的 tag 名称
+          tag: ${{ github.ref_name }}
+          # 如果同名文件已存在，则覆盖它
+          overwrite: true
