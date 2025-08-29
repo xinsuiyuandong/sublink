@@ -1,4 +1,11 @@
 #!/bin/bash
+
+red='\033[0;31m'
+green='\033[0;32m'
+blue='\033[0;34m'
+yellow='\033[0;33m'
+plain='\033[0m'
+
 # 检查用户是否为root
 if [ "$(id -u)" != "0" ]; then
     echo -e "${RED}该脚本必须以root身份运行。${NC}"
