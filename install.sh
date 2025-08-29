@@ -59,7 +59,7 @@ echo -e "${green}服务已启动并已设置为：开机启动${plain}"
 echo ""
 echo -e "${green}输入命令〔sublink〕可以呼出菜单${plain}"
 echo ""
-echo -e "${green}默认账号admin 密码123456 默认端口15268${plain}"
+echo -e "${green}默认账号admin 密码123456 默认端口8000${plain}"
 echo ""
 
 # 下载menu.sh并设置权限
