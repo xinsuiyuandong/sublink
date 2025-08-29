@@ -1,4 +1,11 @@
 #!/bin/bash
+
+red='\033[0;31m'
+green='\033[0;32m'
+blue='\033[0;34m'
+yellow='\033[0;33m'
+plain='\033[0m'
+
 function Up {
     # 获取最新的发行版标签
     latest_release=$(curl --silent "https://api.github.com/repos/xeefei/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
