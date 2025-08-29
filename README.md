@@ -25,17 +25,17 @@
 
 ## [项目特色]
 
-自由度和安全性较高，能够记录访问订阅，配置轻松
+1、自由度和安全性较高，能够记录访问订阅，配置轻松，
 
-二进制编译无需Docker容器
+2、二进制编译直接脚本进行安装，无需Docker容器，
 
-1、目前仅支持客户端：v2ray clash surge，
+3、目前仅支持客户端：v2ray clash surge，
 
-2、对于 v2rayN/v2rayNG 则为base64通用格式，
+4、对于 v2rayN/v2rayNG 则为base64通用格式，
 
-3、clash支持协议:ss ssr trojan vmess vless hy hy2 tuic
+5、clash支持协议:ss ssr trojan vmess vless hy hy2 tuic，
 
-4、surge支持协议:ss trojan vmess hy2 tuic
+6、surge支持协议:ss trojan vmess hy2 tuic。
 
 ## [项目预览]
 
