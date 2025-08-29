@@ -15,7 +15,7 @@
 
 ## [项目简介]
 
-项目基于sublink项目二次开发：https://github.com/jaaksii/sublink
+项目基于sublink项目二次开发：https://github.com/gooaclok819/sublinkX
 
 前端基于：https://github.com/youlaitech/vue3-element-admin
 
@@ -77,7 +77,7 @@ curl -s -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubuse
 
 需要备份的就是db和template
 ```
-docker run --name sublinkx -p 15268:15268 \
+docker run --name sublinkx -p 8000:8000 \
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \
