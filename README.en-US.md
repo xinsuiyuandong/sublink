@@ -14,29 +14,27 @@
 </div>
 ## [Project Information]
 
-Project based on sublink project secondary development: https://github.com/gooaclok819/sublinkX
+1、Project based on sublink project secondary development: https://github.com/gooaclok819/sublinkX
 
-Front-end based on: https://github.com/youlaitech/vue3-element-admin
+2、Front-end based on: https://github.com/youlaitech/vue3-element-admin
 
-Backend using go+gin+gorm
+3、Backend using go+gin+gorm,Default account admin password 123456 self-modification
 
-Default account admin password 123456 self-modification
-
-Because of the rewrite there are still a lot of layout structure and a little less functionality
+4、Because of the rewrite there are still a lot of layout structure and a little less functionality
 
 ## [Project Features]
 
-High degree of freedom and security, the ability to record access to the subscription, easy configuration
+1、High degree of freedom and security, the ability to record access to the subscription, easy configuration
 
-Binary compilation without Docker container.
+2、Binary compilation without Docker container.
 
-Currently only supports the client: v2ray clash surge
+3、Currently only supports the client: v2ray clash surge
 
-v2ray is a base64 universal format
+4、v2rayN/v2rayNG is a base64 universal format
 
-clash supported protocols: ss ssr trojan vmess vless hy hy2 tuic
+5、clash supported protocols: ss ssr trojan vmess vless hy hy2 tuic
 
-surge support protocol:ss trojan vmess hy2 tuic
+6、surge support protocol:ss trojan vmess hy2 tuic
 
 ## [Project Preview]
 
@@ -81,14 +79,6 @@ docker run --name sublinkx -p 8000:8000 \
 -v $PWD/logs:/app/logs \
 -d jaaksi/sublinkx
 ```
-
-To support the development of my project, I plan to apply for a free VPS offered by ZMTO. My project currently involves Docker image support for multiple My project currently involves Docker image support for multiple architectures (arm64 and amd64), as well as automation for building and pushing. Therefore, I am requesting a 4-core, 8GB RAM Ubuntu VPS with root access.
-
-Thank you to the ZTMO team for your support. I look forward to leveraging this VPS to optimize my project's performance and development efficiency. have any questions or suggestions regarding my project, feel free to open an issue, and I will do my best to improve and optimize it.
-
-Thank you for your attention and support!
-
-Feel free to adjust any details as needed!
 
 ## Stargazers over time
 [![Stargazers over time](https://starchart.cc/xeefei/sublink.svg?variant=adaptive)](https://starchart.cc/xeefei/sublink)
