@@ -16,6 +16,6 @@ ENV TZ=Asia/Shanghai
 RUN mkdir -p /app/db /app/logs /app/template && chmod 777 /app/db /app/logs /app/template
 
 COPY --from=builder /app/sublinkX /app/sublinkX
-EXPOSE 15268
+EXPOSE 8000
 CMD ["/app/sublinkX"]
 
