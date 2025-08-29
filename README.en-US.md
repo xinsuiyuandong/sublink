@@ -14,7 +14,7 @@
 </div>
 ## [Project Information]
 
-Project based on sublink project secondary development: https://github.com/jaaksii/sublink
+Project based on sublink project secondary development: https://github.com/gooaclok819/sublinkX
 
 Front-end based on: https://github.com/youlaitech/vue3-element-admin
 
@@ -75,7 +75,7 @@ Then cd into the directory and enter the following command to mount the data.
 
 All you need to back up is the db and templates.
 ```
-docker run --name sublinkx -p 15268:15268 \
+docker run --name sublinkx -p 8000:8000 \
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \
