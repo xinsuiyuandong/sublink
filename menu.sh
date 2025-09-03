@@ -50,7 +50,7 @@ function Select {
     fi
     echo -e "——————————————————————"
     echo -e "${green}----sublink订阅转换服务----${plain}"
-    echo -e "${green}〔3X-UI中文优化版〕专属定制${plain}"
+    echo -e "${green}〔X-Panel 面板〕专属定制${plain}"
     echo -e "——————————————————————"
     echo -e "${green}0.${plain} 退出脚本"
     echo -e "${green}1.${plain} 启动服务"
