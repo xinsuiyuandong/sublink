@@ -42,7 +42,7 @@
 ![1712594176714](webs/src/assets/1.png)
 ![1712594176714](webs/src/assets/2.png)
 
-## [v2.1更新说明]
+## [v2.1 更新说明]
 
 #### 后端更新
 
@@ -75,11 +75,11 @@ curl -s -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubuse
 
 需要备份的就是db和template
 ```
-docker run --name sublinkx -p 8000:8000 \
+docker run --name sublink -p 8000:8000 \
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \
--d jaaksi/sublinkx
+-d xeefei/sublink
 ```
 
 
