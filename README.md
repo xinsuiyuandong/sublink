@@ -2,18 +2,13 @@
 <img src="webs/src/assets/logo.png" width="150px" height="150px" />
 </div>
 
-<div align="center">
 [![Vue Version](https://img.shields.io/github/go-mod/Vue-version/xeefei/sublink.svg?style=for-the-badge)](#)
 [![](https://img.shields.io/github/v/release/xeefei/sublink.svg?style=for-the-badge)](https://github.com/xeefei/sublink/releases)
 [![Element Plus Version](https://img.shields.io/github/go-mod/Element-version/xeefei/sublink.svg?style=for-the-badge)](#)
 [![GO Version](https://img.shields.io/github/go-mod/go-version/xeefei/sublink.svg?style=for-the-badge)](#)
 [![Downloads](https://img.shields.io/github/downloads/xeefei/sublink/total.svg?style=for-the-badge)](https://github.com/xeefei/sublink/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=for-the-badge)]
-    <a href="https://t.me/XUI_CN" target="_blank">
-        <img src="https://img.shields.io/badge/TG-交流群-orange.svg"/>
-    </a>
-    <div align="center"> 中文 | <a href="README.en-US.md">English</div>
-</div>
+[![TG-交流群](https://img.shields.io/badge/TG-交流群-orange.svg)](#)
 
 ## [项目简介]
 
