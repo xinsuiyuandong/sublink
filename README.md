@@ -1,4 +1,4 @@
-<div align="middle left">
+<div align="justify">
 <img src="webs/src/assets/logo.png" width="150px" height="150px" />
 </div>
 
