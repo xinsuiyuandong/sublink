@@ -5,7 +5,7 @@
 [![GO Version](https://img.shields.io/github/go-mod/go-version/xeefei/sublink.svg?style=for-the-badge)](#)
 [![](https://img.shields.io/github/v/release/xeefei/sublink.svg?style=for-the-badge)](https://github.com/xeefei/sublink/releases)
 [![Downloads](https://img.shields.io/github/downloads/xeefei/sublink/total.svg?style=for-the-badge)](https://github.com/xeefei/sublink/releases/latest)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=for-the-badge)]
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=for-the-badge)](https://github.com/xeefei/sublink?tab=MIT-1-ov-file)
 [![TG-交流群](https://img.shields.io/badge/TG-交流群-orange.svg?style=for-the-badge)](https://t.me/XUI_CN)
 
 
