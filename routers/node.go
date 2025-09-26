@@ -7,7 +7,7 @@ import (
 )
 
 func Nodes(r gin.IRoutes) {
-	NodesGroup := r.privateGroup("/api/v1/nodes")
+	NodesGroup := r.Group("/api/v1/nodes")
 	{
 		NodesGroup.POST("/add", api.NodeAdd)
 		NodesGroup.DELETE("/delete", api.NodeDel)
