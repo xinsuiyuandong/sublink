@@ -7,7 +7,7 @@ import (
 )
 
 func Templates(r *gin.RouterGroup) {
-	TempsGroup := r.Group("/api/v1/template")
+	TempsGroup := r.Group("/template")
 	{
 		TempsGroup.POST("/add", api.AddTemp)
 		TempsGroup.POST("/delete", api.DelTemp)
