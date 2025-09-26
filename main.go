@@ -14,9 +14,7 @@ import (
 	"sublink/routers"
 	"sublink/settings"
 	"sublink/utils"
-	"time" // 〔中文注释〕: 新增导入 time 包
 
-	"github.com/gin-contrib/cors" // 〔中文注释〕: 1. 新增导入 CORS 中间件
 	"github.com/gin-gonic/gin"
 )
 
@@ -127,13 +125,25 @@ func Run(port int) {
 	// 这是让 x-panel 前端能够成功调用 sublink API 的关键。
 	// 为了安全，生产环境中建议将 Star ("*") 替换为你的 x-panel 的具体域名。
 	// 例如：AllowOrigins: []string{"https://your-xpanel-domain.com"}
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // 允许所有来源的跨域请求
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+    r.Use(func(c *gin.Context) {
+       origin := c.GetHeader("Origin")
+         if origin != "" {
+            c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+        } else {
+            c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+        }
+       c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+       c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+       c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length")
+       c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+
+         if c.Request.Method == "OPTIONS" {
+           c.AbortWithStatus(204)
+            return
+       }
+
+       c.Next()
+    })
 	// 初始化日志配置
 	utils.Loginit()
 	// 初始化模板
