@@ -8,12 +8,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sublink/api" // 〔中文注释〕: 新增导入 api 包
 	"sublink/middlewares"
 	"sublink/models"
 	"sublink/routers"
 	"sublink/settings"
 	"sublink/utils"
+	"time" // 〔中文注释〕: 新增导入 time 包
 
+	"github.com/gin-contrib/cors" // 〔中文注释〕: 1. 新增导入 CORS 中间件
 	"github.com/gin-gonic/gin"
 )
 
@@ -120,10 +123,29 @@ func main() {
 func Run(port int) {
 	// 初始化gin框架
 	r := gin.Default()
+	// 〔中文注释〕: 2. 在这里添加 CORS 跨域配置
+	// 这是让 x-panel 前端能够成功调用 sublink API 的关键。
+	// 为了安全，生产环境中建议将 Star ("*") 替换为你的 x-panel 的具体域名。
+	// 例如：AllowOrigins: []string{"https://your-xpanel-domain.com"}
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // 允许所有来源的跨域请求
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	// 初始化日志配置
 	utils.Loginit()
 	// 初始化模板
 	Templateinit()
+	// 〔中文注释〕: 3. 创建一个新的公开 API 路由组，它【不使用】登录验证中间件
+	publicApi := r.Group("/api")
+	{
+		// 这个 /api/short 接口就是专门给 x-panel 生成二维码用的
+		publicApi.POST("/short", api.GenerateShortLink)
+		// 这个 /api/convert 接口是为第二步“订阅转换”功能准备的
+		publicApi.POST("/convert", api.ConvertSubscription)
+	}
 	// 安装中间件
 	r.Use(middlewares.AuthorToken) // jwt验证token
 	// 设置静态资源路径
