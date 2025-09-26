@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Total(r *gin.Engine) {
+func Total(r gin.IRoutes) {
 	TotalGroup := r.Group("/api/v1/total")
 	{
 		TotalGroup.GET("/sub", api.SubTotal)
