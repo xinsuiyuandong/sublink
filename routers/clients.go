@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Clients(r gin.IRoutes) {
+func Clients(r *gin.RouterGroup) {
 	ClientsGroup := r.Group("/c")
 	ClientsGroup.Use(middlewares.GetIp)
 	{
