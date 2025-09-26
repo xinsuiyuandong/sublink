@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Templates(r gin.IRoutes) {
+func Templates(r *gin.RouterGroup) {
 	TempsGroup := r.Group("/api/v1/template")
 	{
 		TempsGroup.POST("/add", api.AddTemp)
