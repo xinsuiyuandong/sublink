@@ -7,7 +7,7 @@ import (
 )
 
 func Total(r *gin.RouterGroup) {
-	TotalGroup := r.Group("/api/v1/total")
+	TotalGroup := r.Group("/total")
 	{
 		TotalGroup.GET("/sub", api.SubTotal)
 		TotalGroup.GET("/node", api.NodesTotal)
