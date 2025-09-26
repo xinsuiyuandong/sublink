@@ -31,20 +31,11 @@ func AuthorToken(c *gin.Context) {
 
     // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 /api/short 和 /api/convert
     list := []string{
-        "/static",
         "/api/v1/auth/login",
         "/api/v1/auth/captcha",
-        "/c/",
-        "/api/v1/version",
-        "/api/short",    // 允许生成短链的公开接口
-        "/api/convert",  // 允许订阅转换的公开接口
     }
 
-    // 如果首页直接跳过
-    if c.Request.URL.Path == "/" {
-        c.Next()
-        return
-    }
+    path := c.Request.URL.Path
 
     // 如果是白名单直接跳过
     for _, v := range list {
