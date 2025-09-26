@@ -85,7 +85,7 @@ func ConvertSubscription(c *gin.Context) {
 	defaultConfig := node.SqlConfig{
 		Clash: "./template/clash.yaml", // 默认 Clash 模板路径（基于 Templateinit() 初始化）
 		Surge: "./template/surge.conf", // 默认 Surge 模板路径（基于 Templateinit() 初始化）
-		Udp:   false,                    // 默认启用 UDP
+		Udp:   false,                    // 默认不启用 UDP
 		Cert:  false,                   // 默认不跳过证书验证
 	}
 
@@ -129,3 +129,4 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
+
