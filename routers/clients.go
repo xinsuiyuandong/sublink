@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Clients(r *gin.IRoutes) {
-	ClientsGroup := r.Group("/c")
+func Clients(r gin.IRoutes) {
+	ClientsGroup := r.privateGroup("/c")
 	ClientsGroup.Use(middlewares.GetIp)
 	{
 		// ClientsGroup.GET("/v2ray/:subname", api.GetV2ray)
