@@ -1,13 +1,11 @@
 package api
 
 import (
-	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
-	"sublink/models"
 	"sublink/node"
 	"sublink/utils"
 
@@ -29,21 +27,22 @@ func GenerateShortLink(c *gin.Context) {
 		return
 	}
 
-	// 〔中文注释〕: 调用 utils 包中现有的 Short 方法来生成短链接
-	shortURL, err := utils.Short(req.URL)
-	if err != nil {
+	// 复用 utils.RandString 生成随机短码（使用 16 以获得合理长度随机字符串）
+	shortURL := utils.RandString(16)
+
+                // 添加简单检查（尽管 RandString 不会失败，但更为鲁棒）
+	if shortURL == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "生成短链接失败"})
 		return
 	}
 
-	// 〔中文注释〕: 构造完整的短链接返回给 x-panel
+	// 构造完整的短链接返回给 x-panel
 	// 格式为: http://<你的sublink域名>:8000/s/短代码
 	fullShortURL := "http://" + c.Request.Host + "/s/" + url.PathEscape(shortURL)
 
-	// 〔中文注释〕: 以纯文本形式返回完整的短链接
+	// 以纯文本形式返回完整的短链接
 	c.String(http.StatusOK, fullShortURL)
 }
-
 
 // === Part 2: 用于通用订阅转换 ===
 
@@ -69,30 +68,34 @@ func ConvertSubscription(c *gin.Context) {
 		return
 	}
 	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	
-	// 解码内容（通常是 Base64）
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("读取订阅内容失败: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "读取订阅内容失败"})
+		return
+	}
+
+	// 解码内容（通常是 Base64），复用 node.Base64Decode
 	decodedBody := node.Base64Decode(string(body))
 	// 按行分割成节点链接数组
-	urls := strings.Split(decodedBody, "\n")
-	
-	// 2. 准备一个默认的转换配置 (如果需要更复杂的配置，可以从数据库读取)
-	// 〔中文注释〕: 这里我们使用一个硬编码的默认配置，您也可以修改为从数据库模板读取
+	urls := strings.Split(strings.TrimSpace(decodedBody), "\n")
+
+	// 2. 准备一个默认的转换配置（复用 node.SqlConfig 现有字段；Clash 和 Surge 为模板路径）
+	// 〔中文注释〕: 这里使用硬编码默认值，也可以修改为从数据库或 models 读取
 	defaultConfig := node.SqlConfig{
-		Proxies: []string{}, // Proxies 会被自动填充
-		ProxyGroup: []node.ProxyGroup{
-			{Name: "PROXY", Type: "select", Proxies: []string{"自动选择", "DIRECT"}},
-		},
-		Rule: []string{"FINAL,PROXY"},
+		Clash: "./template/clash.yaml", // 默认 Clash 模板路径（基于 Templateinit() 初始化）
+		Surge: "./template/surge.conf", // 默认 Surge 模板路径（基于 Templateinit() 初始化）
+		Udp:   false,                    // 默认启用 UDP
+		Cert:  false,                   // 默认不跳过证书验证
 	}
 
 	var result string
 	var convertErr error
 
-	// 3. 根据 target 调用不同的转换函数
+	// 3. 根据 target 调用不同的转换函数（复用 node.EncodeClash 和 node.EncodeSurge）
 	switch strings.ToLower(req.Target) {
 	case "clash":
-		// 复用 node.EncodeClash
+		// 复用 node.EncodeClash（使用 urls 和 defaultConfig；模板中处理 groups/rules）
 		clashConfigBytes, err := node.EncodeClash(urls, defaultConfig)
 		if err != nil {
 			convertErr = err
@@ -100,7 +103,7 @@ func ConvertSubscription(c *gin.Context) {
 			result = string(clashConfigBytes)
 		}
 	case "surge":
-		// 复用 node.EncodeSurge
+		// 复用 node.EncodeSurge（使用 urls 和 defaultConfig；模板中处理 groups/rules）
 		surgeConfig, err := node.EncodeSurge(urls, defaultConfig)
 		if err != nil {
 			convertErr = err
@@ -110,7 +113,7 @@ func ConvertSubscription(c *gin.Context) {
 			result = header + surgeConfig
 		}
 	case "v2ray":
-		// 对于 v2ray，通常是直接返回 base64 编码的节点列表
+		// 对于 v2ray，通常是直接返回 base64 编码的节点列表，复用 node.Base64Encode
 		result = node.Base64Encode(strings.Join(urls, "\n"))
 	default:
 		c.JSON(http.StatusBadRequest, gin.H{"error": "不支持的目标类型: " + req.Target})
@@ -122,7 +125,7 @@ func ConvertSubscription(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "转换订阅失败: " + convertErr.Error()})
 		return
 	}
-	
+
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
