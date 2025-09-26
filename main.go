@@ -128,7 +128,7 @@ func Run(port int) {
 	// 为了安全，生产环境中建议将 Star ("*") 替换为你的 x-panel 的具体域名。
 	// 例如：AllowOrigins: []string{"https://your-xpanel-domain.com"}
     r.Use(cors.New(cors.Config{
-    AllowOrigins:     []string{"http://test.wudust.top:13688"}, // 推荐指定前端地址（不要用 "*" + AllowCredentials:true）
+    AllowOrigins:     []string{"${window.location.protocol}//${window.location.hostname}:13688"}, // 推荐指定前端地址（不要用 "*" + AllowCredentials:true）
     AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
     AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
     ExposeHeaders:    []string{"Content-Length"},
