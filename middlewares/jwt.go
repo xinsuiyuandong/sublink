@@ -54,25 +54,25 @@ func AuthorToken(c *gin.Context) {
         }
     }
 
-    // 3) 正常走 token 校验
-    token := c.GetHeader("Authorization")
+    // 3) 正常走 token 校验
+    token := c.GetHeader("Authorization")
     // 【修改中文注释】: 状态码从 400 改为 401 更符合 HTTP 规范
-    if token == "" {
-        c.JSON(http.StatusUnauthorized, gin.H{"msg": "请求未携带token"})
-        c.Abort()
-        return
-    }
+    if token == "" {
+        c.JSON(http.StatusUnauthorized, gin.H{"msg": "请求未携带token"})
+        c.Abort()
+        return
+    }
 
-    // 去掉 Bearer 前缀并 trim 空格（先去掉前缀，再按 '.' 分段）
-    token = strings.TrimSpace(strings.Replace(token, "Bearer ", "", 1))
+    // 去掉 Bearer 前缀并 trim 空格（先去掉前缀，再按 '.' 分段）
+    token = strings.TrimSpace(strings.Replace(token, "Bearer ", "", 1))
 
-    parts := strings.Split(token, ".")
+    parts := strings.Split(token, ".")
     // 【修改中文注释】: 状态码从 400 改为 401 更符合 HTTP 规范
-    if len(parts) != 3 {
-        c.JSON(http.StatusUnauthorized, gin.H{"msg": "token格式错误"})
-        c.Abort()
-        return
-    }
+    if len(parts) != 3 {
+        c.JSON(http.StatusUnauthorized, gin.H{"msg": "token格式错误"})
+        c.Abort()
+        return
+    }
 
     mc, err := ParseToken(token)
     if err != nil {
