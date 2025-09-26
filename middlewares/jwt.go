@@ -30,15 +30,7 @@ func AuthorToken(c *gin.Context) {
     }
 
     // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 API
-    list := []string{
-		"/static",
-        "/api/v1/auth/login",
-        "/api/v1/auth/captcha",
-		"/c/",
-        // 【已添加】: X-Panel 公开接口
-        "/api/short",
-        "/api/convert",
-    }
+    list := []string{"/static", "/api/v1/auth/login", "/api/v1/auth/captcha", "/c/", "/api/short", "/api/convert", "/api/version"}
 
     // 如果首页直接跳过
     if c.Request.URL.Path == "/" {
