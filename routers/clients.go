@@ -8,7 +8,7 @@ import (
 )
 
 func Clients(r gin.IRoutes) {
-	ClientsGroup := r.privateGroup("/c")
+	ClientsGroup := r.Group("/c")
 	ClientsGroup.Use(middlewares.GetIp)
 	{
 		// ClientsGroup.GET("/v2ray/:subname", api.GetV2ray)
