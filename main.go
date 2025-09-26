@@ -165,7 +165,7 @@ func Run(port int) {
 
 	// 〔中文注释〕: 3. 创建一个新的【私有路由组】，并将需要 Token 验证的路由全部放入其中
 	// ----------------------------------------------------
-	privateGroup := r.Group("/")
+	privateGroup := r.Group("/api/v1")
 	// 〔中文注释〕: 4. 只对这个私有路由组应用 Token 验证中间件
 	privateGroup.Use(middlewares.AuthorToken)
 	{
