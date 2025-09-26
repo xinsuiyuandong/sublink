@@ -7,13 +7,13 @@ import (
 )
 
 func User(r *gin.RouterGroup) {
-	authGroup := r.Group("/api/v1/auth")
+	authGroup := r.Group("/auth")
 	{
 		authGroup.POST("/login", api.UserLogin)
 		authGroup.DELETE("/logout", api.UserOut)
 		authGroup.GET("/captcha", api.GetCaptcha)
 	}
-	userGroup := r.Group("/api/v1/users")
+	userGroup := r.Group("/users")
 	{
 		userGroup.GET("/me", api.UserMe)
 		userGroup.GET("/page", api.UserPages)
