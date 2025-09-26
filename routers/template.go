@@ -7,7 +7,7 @@ import (
 )
 
 func Templates(r gin.IRoutes) {
-	TempsGroup := r.privateGroup("/api/v1/template")
+	TempsGroup := r.Group("/api/v1/template")
 	{
 		TempsGroup.POST("/add", api.AddTemp)
 		TempsGroup.POST("/delete", api.DelTemp)
