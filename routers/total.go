@@ -7,7 +7,7 @@ import (
 )
 
 func Total(r gin.IRoutes) {
-	TotalGroup := r.privateGroup("/api/v1/total")
+	TotalGroup := r.Group("/api/v1/total")
 	{
 		TotalGroup.GET("/sub", api.SubTotal)
 		TotalGroup.GET("/node", api.NodesTotal)
