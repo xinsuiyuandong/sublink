@@ -125,10 +125,11 @@ func Run(port int) {
 	r := gin.Default()
 	// 〔中文注释〕: 1. CORS 跨域配置保持不变
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://test.wudust.top:13688"}, // 〔中文注释〕: 为了方便调试，暂时用 "*"，生产环境建议替换为您的 X-Panel 域名
+		AllowOrigins:     []string{"*"}, // 〔中文注释〕: 为了方便调试，暂时用 "*"，生产环境建议替换为您的 X-Panel 域名
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
 	// 初始化日志配置
