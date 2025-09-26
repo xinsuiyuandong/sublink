@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func User(r *gin.IRoutes) {
-	authGroup := r.Group("/api/v1/auth")
+func User(r gin.IRoutes) {
+	authGroup := r.privateGroup("/api/v1/auth")
 	{
 		authGroup.POST("/login", api.UserLogin)
 		authGroup.DELETE("/logout", api.UserOut)
