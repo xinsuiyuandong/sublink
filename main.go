@@ -123,57 +123,61 @@ func main() {
 func Run(port int) {
 	// 初始化gin框架
 	r := gin.Default()
-	// 〔中文注释〕: 2. 在这里添加 CORS 跨域配置
-	// 这是让 x-panel 前端能够成功调用 sublink API 的关键。
-	// 为了安全，生产环境中建议将 Star ("*") 替换为你的 x-panel 的具体域名。
-	// 例如：AllowOrigins: []string{"https://your-xpanel-domain.com"}
-    r.Use(cors.New(cors.Config{
-    AllowOrigins:     []string{"${window.location.protocol}//${window.location.hostname}:13688"}, // 推荐指定前端地址（不要用 "*" + AllowCredentials:true）
-    AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-    AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
-    ExposeHeaders:    []string{"Content-Length"},
-    AllowCredentials: true,
-    MaxAge:           12 * time.Hour,
-    }))
+	// 〔中文注释〕: 1. CORS 跨域配置保持不变
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // 〔中文注释〕: 为了方便调试，暂时用 "*"，生产环境建议替换为您的 X-Panel 域名
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	// 初始化日志配置
 	utils.Loginit()
 	// 初始化模板
 	Templateinit()
-	// 〔中文注释〕: 3. 创建一个新的公开 API 路由组，它【不使用】登录验证中间件
-	publicApi := r.Group("/api")
-	{
-		// 这个 /api/short 接口就是专门给 x-panel 生成二维码用的
-		publicApi.POST("/short", api.GenerateShortLink)
-		// 这个 /api/convert 接口是为第二步“订阅转换”功能准备的
-		publicApi.POST("/convert", api.ConvertSubscription)
-	}
-	// 安装中间件
-	r.Use(middlewares.AuthorToken) // jwt验证token
-	// 设置静态资源路径
+
+	// 〔中文注释〕: 2. 将所有【公共路由】（无需登录）直接注册在 r 上
+	// ----------------------------------------------------
+	// 设置静态资源和首页
 	staticFiles, err := fs.Sub(embeddedFiles, "static")
 	if err != nil {
 		log.Println(err)
 	}
 	r.StaticFS("/static", http.FS(staticFiles))
-	// 设置模板路径
+    // 设置模板路径
 	r.GET("/", func(c *gin.Context) {
 		data, err := fs.ReadFile(staticFiles, "index.html")
 		if err != nil {
 			c.Error(err)
 			return
-
 		}
 		c.Data(200, "text/html", data)
 	})
-	// 注册路由
-	routers.User(r)
-	routers.Mentus(r)
-	routers.Subcription(r)
-	routers.Nodes(r)
-	routers.Clients(r)
-	routers.Total(r)
-	routers.Templates(r)
-	routers.Version(r, version)
+
+	// X-Panel 通信的公开接口
+	r.POST("/api/short", api.GenerateShortLink)
+	r.POST("/api/convert", api.ConvertSubscription)
+
+	// 其他公共接口
+	routers.Subcription(r) // 订阅链接 /c/ 是公开的
+	routers.Version(r, version) // 版本号接口是公开的
+
+	// 〔中文注释〕: 3. 创建一个新的【私有路由组】，并将需要 Token 验证的路由全部放入其中
+	// ----------------------------------------------------
+	privateGroup := r.Group("/")
+	// 〔中文注释〕: 4. 只对这个私有路由组应用 Token 验证中间件
+	privateGroup.Use(middlewares.AuthorToken)
+	{
+		// 〔中文注释〕: 将所有需要登录才能访问的路由注册到这个 `privateGroup`
+		routers.User(privateGroup)
+		routers.Mentus(privateGroup)
+		routers.Nodes(privateGroup)
+		routers.Clients(privateGroup)
+		routers.Total(privateGroup)
+		routers.Templates(privateGroup)
+	}
+
 	// 启动服务
 	r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
