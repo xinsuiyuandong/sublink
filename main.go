@@ -162,6 +162,7 @@ func Run(port int) {
 	// 其他公共接口
 	routers.Subcription(r) // 订阅链接 /c/ 是公开的
 	routers.Version(r, version) // 版本号接口是公开的
+	routers.Clients(r)     // 客户端订阅 /c/ 必须是公开的
 
 	// 〔中文注释〕: 3. 创建一个新的【私有路由组】，并将需要 Token 验证的路由全部放入其中
 	// ----------------------------------------------------
@@ -173,7 +174,6 @@ func Run(port int) {
 		routers.User(privateGroup)
 		routers.Mentus(privateGroup)
 		routers.Nodes(privateGroup)
-		routers.Clients(privateGroup)
 		routers.Total(privateGroup)
 		routers.Templates(privateGroup)
 	}
