@@ -23,19 +23,19 @@ type JwtClaims struct {
 
 // AuthorToken 验证token中间件
 func AuthorToken(c *gin.Context) {
-    // 1) 允许 OPTIONS 预检直接通过（避免被 JWT 拦截）
+    // 1) 允许 OPTIONS 预检直接通过（解决 400 Bad Request 错误）
     if c.Request.Method == http.MethodOptions {
         c.Next()
         return
     }
 
-    // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 /api/short 和 /api/convert
+    // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 API
     list := []string{
 		"/static",
         "/api/v1/auth/login",
         "/api/v1/auth/captcha",
 		"/c/",
-		// 【新增中文注释】: 添加 X-Panel 通信的公开 API 到白名单
+        // 【已添加】: X-Panel 公开接口
         "/api/short",
         "/api/convert",
     }
@@ -47,6 +47,7 @@ func AuthorToken(c *gin.Context) {
     }
 
     // 如果是白名单直接跳过
+    // 检查逻辑：路径是否以白名单项开头
     for _, v := range list {
         if strings.HasPrefix(c.Request.URL.Path, v) {
             c.Next()
@@ -56,24 +57,26 @@ func AuthorToken(c *gin.Context) {
 
     // 3) 正常走 token 校验
     token := c.GetHeader("Authorization")
-    // 【修改中文注释】: 状态码从 400 改为 401 更符合 HTTP 规范
+    
+    // 如果 token 为空，返回 401 Unauthorized
     if token == "" {
         c.JSON(http.StatusUnauthorized, gin.H{"msg": "请求未携带token"})
         c.Abort()
         return
     }
 
-    // 去掉 Bearer 前缀并 trim 空格（先去掉前缀，再按 '.' 分段）
+    // 去掉 Bearer 前缀并 trim 空格
     token = strings.TrimSpace(strings.Replace(token, "Bearer ", "", 1))
 
+    // 检查 token 格式
     parts := strings.Split(token, ".")
-    // 【修改中文注释】: 状态码从 400 改为 401 更符合 HTTP 规范
     if len(parts) != 3 {
         c.JSON(http.StatusUnauthorized, gin.H{"msg": "token格式错误"})
         c.Abort()
         return
     }
 
+    // 解析并校验 token
     mc, err := ParseToken(token)
     if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{
