@@ -20,7 +20,7 @@ if [ ! -d "$INSTALL_DIR" ]; then
 fi
 
 # 获取最新的发行版标签
-latest_release=$(curl --silent "https://api.github.com/repos/xeefei/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+latest_release=$(curl --silent "https://api.github.com/repos/xinsuiyuandong/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 echo "最新版本: $latest_release"
 
 # 检测机器类型
@@ -37,7 +37,7 @@ fi
 
 # 下载文件
 cd ~
-curl -LO "https://github.com/xeefei/sublink/releases/download/$latest_release/$file_name"
+curl -LO "https://github.com/xinsuiyuandong/sublink/releases/download/$latest_release/$file_name"
 
 # 设置文件为可执行
 chmod +x $file_name
@@ -70,5 +70,5 @@ echo -e "${green}默认账号admin 密码123456 默认端口8000${plain}"
 echo ""
 
 # 下载menu.sh并设置权限
-curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubusercontent.com/xeefei/sublink/main/menu.sh
+curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" https://raw.githubusercontent.com/xinsuiyuandong/sublink/main/menu.sh
 chmod 755 "/usr/bin/sublink"
