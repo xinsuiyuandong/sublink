@@ -8,7 +8,7 @@ plain='\033[0m'
 
 function Up {
     # 获取最新的发行版标签
-    latest_release=$(curl --silent "https://api.github.com/repos/xeefei/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    latest_release=$(curl --silent "https://api.github.com/repos/xinsuiyuandong/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
     echo "最新版本: $latest_release"
     # 检测机器类型
     machine_type=$(uname -m)
@@ -23,7 +23,7 @@ function Up {
     fi
 
     # 下载文件
-    curl -LO "https://github.com/xeefei/sublink/releases/download/$latest_release/$file_name"
+    curl -LO "https://github.com/xinsuiyuandong/sublink/releases/download/$latest_release/$file_name"
 
     # 设置文件为可执行
     chmod +x $file_name
@@ -35,7 +35,7 @@ function Up {
 }
 function Select {
     # 获取最新的发行版标签
-    latest_release=$(curl --silent "https://api.github.com/repos/xeefei/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    latest_release=$(curl --silent "https://api.github.com/repos/xinsuiyuandong/sublink/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
     # 获取服务状态
     cd /usr/local/bin/sublink # 进入sublink目录
     status=$(systemctl is-active sublink)
