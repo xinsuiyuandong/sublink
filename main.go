@@ -160,7 +160,6 @@ func Run(port int) {
 	r.POST("/api/convert", api.ConvertSubscription)
 
 	// 其他公共接口
-	routers.Subcription(r) // 订阅链接 /c/ 是公开的
 	routers.Version(r, version) // 版本号接口是公开的
 	routers.Clients(r)     // 客户端订阅 /c/ 必须是公开的
 
@@ -175,6 +174,7 @@ func Run(port int) {
 		routers.Mentus(privateGroup)
 		routers.Nodes(privateGroup)
 		routers.Total(privateGroup)
+		routers.Subcription(privateGroup)
 		routers.Templates(privateGroup)
 	}
 
