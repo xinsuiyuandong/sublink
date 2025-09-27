@@ -36,18 +36,19 @@ func GenerateShortLink(c *gin.Context) {
 		return
 	}
     
-    // 【关键修复】：确保只取 Hostname，避免出现如 "test.wudust.top:8000:8000" 这种双重端口错误
-    host := c.Request.Host
-    if h, _, err := strings.Cut(host, ":"); err == false {
-        // 如果Host字段不包含端口，则使用完整Host
-    } else {
-        // 如果包含端口，只使用 hostname，避免重复。
-        host = h
-    }
+	// 【健壮性改进】：确保只取 Hostname，避免出现如 "test.wudust.top:8000:8000" 这种双重端口错误
+	host := c.Request.Host
+	// 尝试切割主机和端口
+	if h, _, err := strings.Cut(host, ":"); err == false {
+		// 如果 Host 字段不包含端口，则使用完整 Host
+	} else {
+		// 如果包含端口，只使用 hostname
+		host = h
+	}
 
 	// 构造完整的短链接返回给 x-panel
 	// 格式为: http://<你的sublink域名>:8000/s/短代码
-    // 注意：这里的端口 8000 是硬编码的，如果您的服务不是 8000，需要修改。
+	// 注意：这里的端口 8000 是硬编码的，如果您的服务不是 8000，需要修改。
 	fullShortURL := "http://" + host + ":8000" + "/s/" + url.PathEscape(shortURL)
 
 	// 以纯文本形式返回完整的短链接
@@ -58,7 +59,7 @@ func GenerateShortLink(c *gin.Context) {
 
 // 〔中文注释〕: 定义接收订阅转换请求的结构体
 type ConvertRequest struct {
-	URL    string `json:"url" binding:"required"`
+	URL    string `json:"url" binding:"required"`
 	Target string `json:"target" binding:"required"` // 'clash' or 'surge' etc.
 }
 
@@ -80,12 +81,12 @@ func ConvertSubscription(c *gin.Context) {
 	}
 	defer resp.Body.Close()
     
-    // 【关键修复】：检查上游服务器返回的状态码
-    if resp.StatusCode != http.StatusOK {
-        log.Printf("获取订阅链接返回状态码错误: %s", resp.Status)
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "获取原始订阅链接失败，上游服务器返回状态码: " + resp.Status})
-        return
-    }
+	// 【关键修复】：检查上游服务器返回的状态码，解决 500 错误
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("获取订阅链接返回状态码错误: %s", resp.Status)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取原始订阅链接失败，上游服务器返回状态码: " + resp.Status})
+		return
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -104,8 +105,8 @@ func ConvertSubscription(c *gin.Context) {
 	defaultConfig := node.SqlConfig{
 		Clash: "./template/clash.yaml", // 默认 Clash 模板路径（基于 Templateinit() 初始化）
 		Surge: "./template/surge.conf", // 默认 Surge 模板路径（基于 Templateinit() 初始化）
-		Udp:   false,                    // 默认不启用 UDP
-		Cert:  false,                   // 默认不跳过证书验证
+		Udp:   false,                  // 默认不启用 UDP
+		Cert:  false,                  // 默认不跳过证书验证
 	}
 
 	var result string
@@ -148,6 +149,3 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
-
-
-
