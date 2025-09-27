@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Total(r *gin.Engine) {
+func Total(r *gin.RouterGroup) {
 	TotalGroup := r.Group("/total")
 	{
 		TotalGroup.GET("/sub", api.SubTotal)
