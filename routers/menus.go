@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Mentus(r *gin.Engine) {
+func Mentus(r *gin.RouterGroup) {
 	MentusGroup := r.Group("/menus")
 	{
 		// MentusGroup.GET("/menus", api.GetMenus)
