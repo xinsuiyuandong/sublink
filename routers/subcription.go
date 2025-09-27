@@ -7,7 +7,7 @@ import (
 )
 
 func Subcription(r *gin.Engine) {
-	SubcriptionGroup := r.Group("/sub")
+	SubcriptionGroup := r.Group("/api/v1/subcription")
 	{
 		SubcriptionGroup.POST("/add", api.SubAdd)
 		SubcriptionGroup.DELETE("/delete", api.SubDel)
