@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Nodes(r *gin.Engine) {
+func Nodes(r *gin.RouterGroup) {
 	NodesGroup := r.Group("/nodes")
 	{
 		NodesGroup.POST("/add", api.NodeAdd)
