@@ -8,16 +8,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sublink/api" // 确保导入 api 包
 	"sublink/middlewares"
 	"sublink/models"
 	"sublink/routers"
 	"sublink/settings"
 	"sublink/utils"
-	"time" // 【新增】：导入 time 包用于 CORS 配置
+	"time" // 确保导入 time 包
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/cors" // 【新增】：导入 cors 包
-	"sublink/api" // 【新增】：导入 api 包用于路由注册
+	"github.com/gin-contrib/cors" // 确保导入 cors 包
 )
 
 //go:embed static/js/*
@@ -76,7 +76,7 @@ func main() {
 	// 初始化配置
 	models.ConfigInit()
 	config := models.ReadConfig() // 读取配置文件
-	var port = config.Port        // 读取端口号
+	var port = config.Port       // 读取端口号
 	// 获取版本号
 	var Isversion bool
 	version = "v2.2"
@@ -116,7 +116,6 @@ func main() {
 		Run(port)
 	default:
 		return
-
 	}
 }
 
@@ -128,18 +127,17 @@ func Run(port int) {
 	// 初始化模板
 	Templateinit()
 
-	// 【关键保留】：CORS 跨域配置
+	// CORS 跨域配置
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, 
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins:     []string{"*"}, 
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
+		MaxAge:           12 * time.Hour,
 	}))
 
-	// 【关键移除】：删除 r.Use(middlewares.AuthorToken) 这一行，彻底移除 JWT 验证。
-	// r.Use(middlewares.AuthorToken) // 验证机制已被移除
+	// 【关键移除】：r.Use(middlewares.AuthorToken) 已删除，彻底移除 JWT 验证
 	
 	// 设置静态资源路径
 	staticFiles, err := fs.Sub(embeddedFiles, "static")
@@ -158,12 +156,11 @@ func Run(port int) {
 		c.Data(200, "text/html", data)
 	})
 	
-	// 【关键保留】：X-Panel 通信的公开接口
+	// X-Panel 通信的公开接口
 	r.POST("/api/short", api.GenerateShortLink)
 	r.POST("/api/convert", api.ConvertSubscription)
 	
-	// 注册路由
-	// 所有路由现在都是公开的，不再受 JWT 约束
+	// 注册路由 (所有路由现在都是公开的)
 	routers.User(r)
 	routers.Mentus(r)
 	routers.Subcription(r)
