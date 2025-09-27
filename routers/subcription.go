@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Subcription(r *gin.Engine) {
-	SubcriptionGroup := r.Group("/sub")
+func Subcription(r *gin.RouterGroup) {
+	SubcriptionGroup := r.Group("/subcription")
 	{
 		SubcriptionGroup.POST("/add", api.SubAdd)
 		SubcriptionGroup.DELETE("/delete", api.SubDel)
