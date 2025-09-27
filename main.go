@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"sublink/api" // 确保导入 api 包
-	"sublink/middlewares"
 	"sublink/models"
 	"sublink/routers"
 	"sublink/settings"
