@@ -27,9 +27,6 @@ func AuthorToken(c *gin.Context) {
         c.Next()
         return
     }
-
-	// 获取请求路径
-    path := c.Request.URL.Path
 	
     // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 API
     list := []string{"/static", "/api/v1/auth/login", "/api/v1/auth/captcha", "/c/", "/api/short", "/api/convert", "/api/version"}
@@ -40,14 +37,15 @@ func AuthorToken(c *gin.Context) {
         return
     }
 
-    // 如果是白名单直接跳过
-    // 检查逻辑：路径是否以白名单项开头
-    for _, v := range list {
-        if strings.HasPrefix(c.Request.URL.Path, v) {
-            c.Next()
-            return
-        }
+// 如果是白名单直接跳过
+// 检查逻辑：路径是否以白名单项开头 或 路径完全匹配白名单项
+for _, v := range list {
+    // 【关键修改】：同时检查 HasPrefix (用于 /static) 和 绝对等于 (用于 /api/short)
+    if strings.HasPrefix(c.Request.URL.Path, v) || c.Request.URL.Path == v {
+        c.Next()
+        return
     }
+}
 
     // 3) 正常走 token 校验
     token := c.GetHeader("Authorization")
