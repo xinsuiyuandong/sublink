@@ -155,15 +155,6 @@ func Run(port int) {
 		c.Data(200, "text/html", data)
 	})
 
-	// X-Panel 通信的公开接口
-	r.POST("/api/short", api.GenerateShortLink)
-	r.POST("/api/convert", api.ConvertSubscription)
-
-	// 其他公共接口
-	routers.Subcription(r) // 订阅链接 /c/ 是公开的
-	routers.Version(r, version) // 版本号接口是公开的
-	routers.Clients(r)     // 客户端订阅 /c/ 必须是公开的
-
 	// 〔中文注释〕: 3. 创建一个新的【私有路由组】，并将需要 Token 验证的路由全部放入其中
 	// ----------------------------------------------------
 	privateGroup := r.Group("/api/v1")
@@ -177,6 +168,15 @@ func Run(port int) {
 		routers.Total(privateGroup)
 		routers.Templates(privateGroup)
 	}
+
+		// X-Panel 通信的公开接口
+	r.POST("/api/short", api.GenerateShortLink)
+	r.POST("/api/convert", api.ConvertSubscription)
+
+	// 其他公共接口
+	routers.Subcription(r) // 订阅链接 /c/ 是公开的
+	routers.Version(r, version) // 版本号接口是公开的
+	routers.Clients(r)     // 客户端订阅 /c/ 必须是公开的
 
 	// 启动服务
 	r.Run(fmt.Sprintf("0.0.0.0:%d", port))
