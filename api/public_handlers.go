@@ -36,7 +36,7 @@ func GenerateShortLink(c *gin.Context) {
 		return
 	}
     
-	// 【健壮性改进】：确保只取 Hostname，避免出现如 "test.wudust.top:8000:8000" 这种双重端口错误
+	// 【健壮性改进】：确保只取 Hostname，避免出现如 "aaa.xxxx.com:8000:8000" 这种双重端口错误
 	host := c.Request.Host
 	// 尝试切割主机和端口
 	if h, _, err := strings.Cut(host, ":"); err == false {
@@ -149,3 +149,4 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
+
