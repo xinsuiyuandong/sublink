@@ -30,15 +30,25 @@ func GenerateShortLink(c *gin.Context) {
 	// 复用 utils.RandString 生成随机短码（使用 16 以获得合理长度随机字符串）
 	shortURL := utils.RandString(16)
 
-                // 添加简单检查（尽管 RandString 不会失败，但更为鲁棒）
+	// 添加简单检查（尽管 RandString 不会失败，但更为鲁棒）
 	if shortURL == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "生成短链接失败"})
 		return
 	}
+    
+    // 【关键修复】：确保只取 Hostname，避免出现如 "test.wudust.top:8000:8000" 这种双重端口错误
+    host := c.Request.Host
+    if h, _, err := strings.Cut(host, ":"); err == false {
+        // 如果Host字段不包含端口，则使用完整Host
+    } else {
+        // 如果包含端口，只使用 hostname，避免重复。
+        host = h
+    }
 
 	// 构造完整的短链接返回给 x-panel
 	// 格式为: http://<你的sublink域名>:8000/s/短代码
-	fullShortURL := "http://" + c.Request.Host + "/s/" + url.PathEscape(shortURL)
+    // 注意：这里的端口 8000 是硬编码的，如果您的服务不是 8000，需要修改。
+	fullShortURL := "http://" + host + ":8000" + "/s/" + url.PathEscape(shortURL)
 
 	// 以纯文本形式返回完整的短链接
 	c.String(http.StatusOK, fullShortURL)
@@ -48,7 +58,7 @@ func GenerateShortLink(c *gin.Context) {
 
 // 〔中文注释〕: 定义接收订阅转换请求的结构体
 type ConvertRequest struct {
-	URL    string `json:"url" binding:"required"`
+	URL    string `json:"url" binding:"required"`
 	Target string `json:"target" binding:"required"` // 'clash' or 'surge' etc.
 }
 
@@ -63,11 +73,20 @@ func ConvertSubscription(c *gin.Context) {
 	// 1. 从用户提供的 URL 获取订阅内容
 	resp, err := http.Get(req.URL)
 	if err != nil {
-		log.Printf("获取订阅链接失败: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取原始订阅链接失败"})
+		// 【改进】：日志记录更详细的连接错误
+		log.Printf("获取订阅链接失败 (连接或网络错误): %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取原始订阅链接失败 (请检查网络或URL)"})
 		return
 	}
 	defer resp.Body.Close()
+    
+    // 【关键修复】：检查上游服务器返回的状态码
+    if resp.StatusCode != http.StatusOK {
+        log.Printf("获取订阅链接返回状态码错误: %s", resp.Status)
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "获取原始订阅链接失败，上游服务器返回状态码: " + resp.Status})
+        return
+    }
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("读取订阅内容失败: %v", err)
@@ -129,4 +148,5 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
+
 
