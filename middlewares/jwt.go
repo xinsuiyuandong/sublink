@@ -2,8 +2,6 @@ package middlewares
 
 import (
 	"errors"
-	"net/http"
-	"strings"
 	"sublink/models"
 
 	"github.com/dgrijalva/jwt-go"
