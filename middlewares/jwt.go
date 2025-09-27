@@ -10,8 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 随机密钥
+// 【新增核心常量】: 固定的公共 API 密钥。前端和后端必须使用此密钥。
+const StaticPublicAPIKey = "Your_Fixed_Static_API_Key_For_Sublink_is_20251010_xyz" 
+// 【新增常量】: Authorization 头部的前缀格式
+const BearerPrefix = "Bearer "
 
+// 随机密钥
 // var Secret = []byte("sublink") // 秘钥
 var Secret = []byte(models.ReadConfig().JwtSecret) // 从配置文件读取JWT密钥
 
@@ -29,8 +33,33 @@ func AuthorToken(c *gin.Context) {
         return
     }
 
+    // 获取请求路径
+    path := c.Request.URL.Path // 假设 path = "/api/short"	
+
+	// 针对 /api/short 和 /api/convert 进行固定密钥验证
+    if path == "/api/short" || path == "/api/convert" {
+        authHeader := c.GetHeader("Authorization")
+        
+        // 检查是否以 Bearer 开头
+        if strings.HasPrefix(authHeader, BearerPrefix) {
+            // 提取密钥
+            submittedKey := strings.TrimSpace(strings.Replace(authHeader, BearerPrefix, "", 1))
+            
+            // 比对密钥是否匹配我们写死的常量
+            if submittedKey == StaticPublicAPIKey { 
+                c.Next() // 验证通过，放行
+                return
+            }
+        }
+        
+        // 验证失败或格式错误，返回未授权错误
+        c.JSON(http.StatusUnauthorized, gin.H{"msg": "公共 API 密钥验证失败，请联系管理员"})
+        c.Abort()
+        return
+    }
+	
     // 2) 白名单：静态资源、登录、验证码，以及我们要公开的 API
-    list := []string{"/static", "/api/v1/auth/login", "/api/v1/auth/captcha", "/c/", "/api/short", "/api/convert", "/api/version"}
+    list := []string{"/static", "/api/v1/auth/login", "/api/v1/auth/captcha", "/c/", "/api/version"}
 
     // 如果首页直接跳过
     if c.Request.URL.Path == "/" {
