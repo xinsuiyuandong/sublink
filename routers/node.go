@@ -7,7 +7,7 @@ import (
 )
 
 func Nodes(r *gin.Engine) {
-	NodesGroup := r.Group("/api/v1/nodes")
+	NodesGroup := r.Group("/nodes")
 	{
 		NodesGroup.POST("/add", api.NodeAdd)
 		NodesGroup.DELETE("/delete", api.NodeDel)
