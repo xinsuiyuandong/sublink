@@ -137,9 +137,6 @@ func Run(port int) {
 		MaxAge:           12 * time.Hour,
 	}))
 	
-	// 安装中间件
-	r.Use(middlewares.AuthorToken) // jwt验证token
-	
 	// 设置静态资源路径
 	staticFiles, err := fs.Sub(embeddedFiles, "static")
 	if err != nil {
