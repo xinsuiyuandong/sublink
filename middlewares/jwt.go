@@ -2,6 +2,8 @@ package middlewares
 
 import (
 	"errors"
+	"net/http"
+	"strings"
 	"sublink/models"
 
 	"github.com/dgrijalva/jwt-go"
@@ -9,6 +11,7 @@ import (
 )
 
 // 随机密钥
+
 // var Secret = []byte("sublink") // 秘钥
 var Secret = []byte(models.ReadConfig().JwtSecret) // 从配置文件读取JWT密钥
 
@@ -19,9 +22,46 @@ type JwtClaims struct {
 }
 
 // AuthorToken 验证token中间件
-// 【关键修改】：该函数已清空，现在它无条件地放行所有请求，彻底移除 JWT 验证。
 func AuthorToken(c *gin.Context) {
-	c.Next() // 立即调用 c.Next()，不进行任何检查
+	// 定义白名单
+	list := []string{"/static", "/api/v1/auth/login", "/api/v1/auth/captcha", "/c/", "/api/short", "/api/v1/subcription", "/api/convert", "/api/version"}
+	// 如果是首页直接跳过
+	if c.Request.URL.Path == "/" {
+		c.Next()
+		return
+	}
+	// 如果是白名单直接跳过
+	for _, v := range list {
+		if strings.HasPrefix(c.Request.URL.Path, v) {
+			c.Next()
+			return
+		}
+	}
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		c.JSON(400, gin.H{"msg": "请求未携带token"})
+		c.Abort()
+		return
+	}
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		c.JSON(400, gin.H{"msg": "token格式错误"})
+		c.Abort()
+		return
+	}
+	// 去掉Bearer前缀
+	token = strings.Replace(token, "Bearer ", "", -1)
+	mc, err := ParseToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"code": 401,
+			"msg":  err.Error(),
+		})
+		c.Abort()
+		return
+	}
+	c.Set("username", mc.Username)
+	c.Next()
 }
 
 // ParseToken 解析JWT
