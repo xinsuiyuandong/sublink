@@ -53,7 +53,7 @@ func GenerateShortLink(c *gin.Context) {
 	}
 
 	// 〔中文注释〕: 这里的端口 8000 是硬编码的，请确保您的 sublink 服务运行在该端口
-	fullShortURL := "http://" + host + ":8000" + "/c/" + url.PathEscape(shortCode)
+	fullShortURL := "http://" + host + ":8000" + "/s/" + url.PathEscape(shortCode)
 	c.String(http.StatusOK, fullShortURL)
 }
 
@@ -151,5 +151,6 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
+
 
 
