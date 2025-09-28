@@ -10,7 +10,7 @@ import (
 
 // 随机密钥
 // var Secret = []byte("sublink") // 秘钥
-var Secret = []byte(models.ReadConfig().JwtSecret) // 从配置文件读取JWT密钥
+// var Secret = []byte(models.ReadConfig().JwtSecret) // 从配置文件读取JWT密钥
 
 // JwtClaims jwt声明
 type JwtClaims struct {
