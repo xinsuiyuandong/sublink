@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sublink/node"
 	"sublink/utils"
+	"sublink/models" // 【新增】: 导入 models 包
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ type ShortenRequest struct {
 	URL string `json:"url" binding:"required"`
 }
 
-// 〔中文注释〕: /api/short 接口的处理函数
+// 〔中文注释〕: 【修复后】的 /api/short 接口处理函数
 func GenerateShortLink(c *gin.Context) {
 	var req ShortenRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -27,31 +28,32 @@ func GenerateShortLink(c *gin.Context) {
 		return
 	}
 
-	// 复用 utils.RandString 生成随机短码（使用 16 以获得合理长度随机字符串）
-	shortURL := utils.RandString(16)
+	// 1. 生成一个唯一的随机短码
+	shortCode := utils.RandString(16)
 
-	// 添加简单检查（尽管 RandString 不会失败，但更为鲁棒）
-	if shortURL == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "生成短链接失败"})
+	// 2. 【核心】: 创建一个新的 Subcription 对象来存储映射关系
+	subEntry := models.Subcription{
+		Name:   "OneClick-" + shortCode, // 〔中文注释〕: 给个名字，方便后台识别
+		Code:   shortCode,               // 〔中文注释〕: 存储随机短码
+		Config: req.URL,                 // 【重要】: 存储原始的长链接 (vless://...)
+	}
+
+	// 3. 【核心】: 将这个映射关系保存到数据库
+	if err := models.DB.Create(&subEntry).Error; err != nil {
+		log.Printf("保存短链接到数据库失败: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "创建短链接失败"})
 		return
 	}
-    
-	// 【健壮性改进】：确保只取 Hostname，避免出现如 "aaa.xxxx.com:8000:8000" 这种双重端口错误
+
+	// 4. 〔中文注释〕: 拼接并返回可以正常工作的短链接
 	host := c.Request.Host
-	// 尝试切割主机和端口
 	if h, _, err := strings.Cut(host, ":"); err == false {
-		// 如果 Host 字段不包含端口，则使用完整 Host
 	} else {
-		// 如果包含端口，只使用 hostname
 		host = h
 	}
 
-	// 构造完整的短链接返回给 x-panel
-	// 格式为: http://<你的sublink域名>:8000/s/短代码
-	// 注意：这里的端口 8000 是硬编码的，如果您的服务不是 8000，需要修改。
-	fullShortURL := "http://" + host + ":8000" + "/s/" + url.PathEscape(shortURL)
-
-	// 以纯文本形式返回完整的短链接
+	// 〔中文注释〕: 这里的端口 8000 是硬编码的，请确保您的 sublink 服务运行在该端口
+	fullShortURL := "http://" + host + ":8000" + "/c/" + url.PathEscape(shortCode)
 	c.String(http.StatusOK, fullShortURL)
 }
 
@@ -149,4 +151,5 @@ func ConvertSubscription(c *gin.Context) {
 	// 4. 将转换后的结果作为纯文本返回
 	c.String(http.StatusOK, result)
 }
+
 
