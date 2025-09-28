@@ -1,8 +1,6 @@
 package routers
 
 import (
-	"log"
-	"net/http"
 	"sublink/api"
 
 	"github.com/gin-gonic/gin"
