@@ -23,6 +23,7 @@ type Config struct {
 }
 
 // var comment string = `# jwt_secret: JWT密钥
+var comment string = `
 # expire_days: token 过期天数
 # port: 启动端口
 `
