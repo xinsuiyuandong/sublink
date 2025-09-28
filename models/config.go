@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sublink/utils"
 
 	"gopkg.in/yaml.v3"
 )
