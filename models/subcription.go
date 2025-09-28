@@ -13,6 +13,7 @@ type Subcription struct {
 	gorm.Model
 	ID        int
 	Name      string
+	Code      string    `gorm:"type:varchar(255);uniqueIndex"` // 用于存储短链接的唯一代码，并建立唯一索引
 	Config    string    `gorm:"type:text"` // Config 存储为 JSON 字符串
 	NodeOrder string    `gorm:"type:text"`
 	Nodes     []Node    `gorm:"many2many:subcription_nodes;"`
