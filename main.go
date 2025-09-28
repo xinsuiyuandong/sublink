@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"sublink/api" // 【新增】: 导入 api 包
+	"sublink/middlewares"
 	"sublink/models"
 	"sublink/routers"
 	"sublink/settings"
@@ -135,6 +136,9 @@ func Run(port int) {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	
+	// 安装中间件
+	r.Use(middlewares.AuthorToken) // jwt验证token
 	
 	// 设置静态资源路径
 	staticFiles, err := fs.Sub(embeddedFiles, "static")
