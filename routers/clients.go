@@ -4,7 +4,6 @@ import (
 	"sublink/api"
 	"log"
 	"net/http"
-	"sublink/middlewares"
 	"sublink/models" // 【新增】: 导入 models 包
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +11,6 @@ import (
 
 func Clients(r *gin.Engine) {
 	ClientsGroup := r.Group("/c")
-	ClientsGroup.Use(middlewares.GetIp)
 	{
 		// ClientsGroup.GET("/v2ray/:subname", api.GetV2ray)
 		// ClientsGroup.GET("/clash/:subname", api.GetClash)
